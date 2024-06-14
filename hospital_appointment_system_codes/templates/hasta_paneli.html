@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasta Paneli</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Hasta Paneli - {{ current_user.ad }}</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- Randevular -->
+        <h3>Randevularınız:</h3>
+        <ul class="list-group">
+            {% for randevu in randevular %}
+            <li class="list-group-item">
+                Doktor: {{ randevu.doktor.ad }} {{ randevu.doktor.soyad }} - {{ randevu.tarih.strftime('%d.%m.%Y %H:%M') }}
+                <form action="{{ url_for('randevu_iptal', randevu_id=randevu.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm float-right">İptal Et</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        <hr>
+
+        <!-- Randevu Alma -->
+        <h3>Randevu Al</h3>
+        <a href="{{ url_for('randevu_al') }}" class="btn btn-primary">Randevu Al</a>
+        <br><br>
+
+        <!-- Reçeteler ve Raporlar -->
+        <h3>Reçeteler ve Raporlar:</h3>
+        {% if raporlar_receteler %}
+        <ul class="list-group">
+            {% for rapor_recete in raporlar_receteler %}
+            <li class="list-group-item">
+                <strong>Tür:</strong> {{ rapor_recete.tip }}<br>
+                <strong>Tarih:</strong> {{ rapor_recete.tarih.strftime('%d.%m.%Y %H:%M') }}<br>
+                <strong>İçerik:</strong><br>
+                <p>{{ rapor_recete.icerik }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <div class="alert alert-info">
+            Kayıtlı reçete veya rapor bulunmamaktadır.
+        </div>
+        {% endif %}
+
+        <hr>
+        <p><a href="{{ url_for('cikis') }}">Çıkış Yap</a></p>
+    </div>
+</body>
+</html>

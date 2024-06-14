@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doktor Paneli</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Doktor Paneli</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- Doctor Info and Actions -->
+        <div class="mb-3">
+            <p><strong>Doktor Adı:</strong> {{ current_user.ad }} {{ current_user.soyad }}</p>
+            <p><a href="{{ url_for('cikis') }}" class="btn btn-danger">Çıkış Yap</a></p>
+        </div>
+
+        <h3>Randevular</h3>
+        <ul class="list-group">
+            {% for randevu in randevular %}
+            <li class="list-group-item">
+                <strong>Hasta Adı:</strong> {{ randevu.hasta.ad }} {{ randevu.hasta.soyad }}<br>
+                <strong>Tarih:</strong> {{ randevu.tarih.strftime('%d.%m.%Y %H:%M') }}<br>
+                <strong>Durum:</strong> {{ randevu.durum }}
+                <a href="{{ url_for('randevu_iptal', randevu_id=randevu.id) }}" class="btn btn-danger btn-sm float-right">Randevu İptal</a>
+
+                <!-- Link to view patient reports and prescriptions -->
+                <a href="{{ url_for('hasta_rapor_receteler', hasta_id=randevu.hasta.id) }}" class="btn btn-primary btn-sm float-right mr-2">Rapor ve Reçeteler</a>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <br>
+        <h3>Hasta Listesi</h3>
+        <ul class="list-group">
+            {% for patient in patients %}
+            <li class="list-group-item">
+                <strong>Hasta Adı:</strong> {{ patient.ad }} {{ patient.soyad }}
+                <!-- Check if the patient has any appointments -->
+                {% set patient_randevular = patient.randevular | selectattr('doktor_id', 'equalto', current_user.id) | list %}
+                {% if patient_randevular %}
+                <br>
+                <strong>Randevular:</strong>
+                <ul>
+                    {% for randevu in patient_randevular %}
+                    <li>
+                        {{ randevu.tarih.strftime('%d.%m.%Y %H:%M') }} - Durum: {{ randevu.durum }}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <br>
+                <span class="text-muted">Henüz randevu almamış.</span>
+                {% endif %}
+                <!-- Link to view patient reports and prescriptions -->
+                <a href="{{ url_for('hasta_rapor_receteler', hasta_id=patient.id) }}" class="btn btn-primary btn-sm float-right">Rapor ve Reçeteler</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

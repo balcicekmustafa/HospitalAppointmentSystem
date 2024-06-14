@@ -1,0 +1,27 @@
+<!-- templates/randevu_iptal.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Randevu İptal Et</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <form method="POST">
+        <p>Eğer iptal etmek istediğiniz randevuyu görmüyorsanız, geri dönebilir veya çıkış yapabilirsiniz.</p>
+        <ul>
+            {% for randevu in randevular %}
+                <li>
+                    {{ randevu.doktor.ad }} {{ randevu.doktor.soyad }} - {{ randevu.tarih.strftime('%d.%m.%Y %H:%M') }}
+                    <button type="submit" formaction="{{ url_for('randevu_iptal', randevu_id=randevu.id) }}">İptal Et</button>
+                </li>
+            {% endfor %}
+        </ul>
+    </form>
+    <p><a href="{{ url_for('hasta_giris') }}">Hasta Paneli</a></p>
+{% endblock %}

@@ -1,0 +1,51 @@
+<!-- hasta_rapor_receteler.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raporlar ve Reçeteler</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Raporlar ve Reçeteler - {{ patient.ad }} {{ patient.soyad }}</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <h3>Raporlar ve Reçeteler</h3>
+        <ul class="list-group">
+            {% for rapor_recete in raporlar_receteler %}
+            <li class="list-group-item">
+                <strong>Tür:</strong> {{ rapor_recete.tip }}<br>
+                <strong>Tarih:</strong> {{ rapor_recete.tarih.strftime('%d.%m.%Y %H:%M') }}<br>
+                <strong>İçerik:</strong><br>
+                <p>{{ rapor_recete.icerik }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <hr>
+        <h3>Yeni Reçete Ekle</h3>
+        <form method="POST" action="{{ url_for('rapor_recete_ekle', hasta_id=patient.id) }}">
+            <div class="form-group">
+                <label for="tip">Rapor veya Reçete Türü:</label>
+                <select class="form-control" id="tip" name="tip">
+                    <option value="rapor">Rapor</option>
+                    <option value="reçete">Reçete</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="icerik">İçerik:</label>
+                <textarea class="form-control" id="icerik" name="icerik" rows="5"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Ekle</button>
+        </form>
+    </div>
+</body>
+</html>

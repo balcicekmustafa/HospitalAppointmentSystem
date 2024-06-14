@@ -1,0 +1,39 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('hasta_kayit') }}">Hasta Kayıt</a>
+            <a href="{{ url_for('hasta_giris') }}">Hasta Giriş</a>
+            <a href="{{ url_for('doktor_kayit') }}">Doktor Kayıt</a>
+            <a href="{{ url_for('doktor_giris') }}">Doktor Giriş</a>
+            {% if session['user_id'] %}
+                <a href="{{ url_for('cikis') }}">Çıkış</a>
+            {% endif %}
+        </nav>
+    </header>
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                    {% for category, message in messages %}
+                        <li class="flash-{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2024 Your Hospital</p>
+    </footer>
+</body>
+</html>

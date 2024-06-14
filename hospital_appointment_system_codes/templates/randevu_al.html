@@ -1,0 +1,39 @@
+<!-- randevu_al.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Randevu Al</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Randevu Al</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        <form method="POST">
+            <div class="form-group">
+                <label for="doktor_id">Doktor:</label>
+                <select id="doktor_id" name="doktor_id" class="form-control" required>
+                    {% for doktor in doktorlar %}
+                    <option value="{{ doktor.id }}">{{ doktor.ad }} {{ doktor.soyad }}-{{doktor.alan}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="tarih">Tarih:</label>
+                <input type="datetime-local" id="tarih" name="tarih" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Randevu Al</button>
+        </form>
+        <br>
+        <p><a href="{{ url_for('hasta_paneli') }}">Geri Dön</a></p>
+    </div>
+</body>
+</html>
